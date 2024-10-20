@@ -1,0 +1,51 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5430:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    command: -p 5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./back-end
+    depends_on:
+      postgres:
+        condition: service_healthy # Only start backend after PostgreSQL is healthy
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+      DB_HOST: postgres
+      DB_PORT: 5432
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./back-end:/app
+    command: /bin/sh -c "npm run seed && npm start" # Run npm start after seeding
+    links:
+      - postgres
+
+  frontend:
+    build: ./front-end
+    depends_on:
+      backend:
+        condition: service_started # Start frontend after backend starts
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./front-end:/app
+    command: npm run dev
+
+volumes:
+  postgres_data:

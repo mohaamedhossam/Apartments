@@ -16,7 +16,7 @@ This is a simple apartment listing application that allows users to view and man
    ```bash
    git clone <repository-url>
    cd <repository-name>
-2. Clone the repository:
+2. Build and run the application:
    ```bash
    docker copmose up --build
  # Apartment Listing App
@@ -30,6 +30,16 @@ This is a simple apartment listing application that allows users to view and man
 ### Save an Apartment
 - **Endpoint**: `POST /apartments`
 - **URL**: `http://localhost:3000/apartments`
+- **Body**: {
+  "name": "Ocean View Apartment",
+  "unitNumber": "A101",
+  "project": "Seaside Towers",
+  "description": "A beautiful luxury apartment with a stunning ocean view.",
+  "location": "Miami Beach",
+  "price": 450000,
+  "available": true
+}
+
 
 ### List All Apartments
 - **Endpoint**: `GET /apartments`
